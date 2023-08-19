@@ -1,3 +1,23 @@
 type Query {
-  greeting: String
+  jobs: [Job!]
+}
+
+"""
+This represent the company
+"""
+type Company {
+  id: ID!
+  name: String!
+  description: String
+}
+
+type Job {
+  id: ID!
+  """
+  this is __date__ in ISO-8601 format. E.g. `2023-12-31`.
+  """
+  date: String!
+  title: String!
+  description: String
+  company: Company
 }
