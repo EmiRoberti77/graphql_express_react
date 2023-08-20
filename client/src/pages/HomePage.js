@@ -10,6 +10,7 @@ function HomePage() {
       const response = await getJobs();
       setJobs(response);
     };
+
     fetchJobs();
   }, []);
   return (

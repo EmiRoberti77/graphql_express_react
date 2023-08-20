@@ -23,6 +23,10 @@ export async function createJob({ companyId, title, description }) {
   return job;
 }
 
+export async function getJobsByCompany(companyId) {
+  return await getJobTable().select().where({ companyId });
+}
+
 export async function deleteJob(id) {
   const job = await getJobTable().first().where({ id });
   if (!job) {
