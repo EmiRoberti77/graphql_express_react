@@ -5,6 +5,7 @@ import {
   getJobsByCompany,
   createJob,
   deleteJob,
+  updateJob,
 } from './db/jobs.js';
 import { getCompany, getCompanies } from './db/companies.js';
 
@@ -36,6 +37,11 @@ export const resolvers = {
     },
     deleteJob: (_root, { id }) => {
       const job = deleteJob(id);
+      if (!job) throw notFound('job not found for id:' + id, 'NOT_FOUND');
+      return job;
+    },
+    updateJob: (_root, { input: { id, title, description } }) => {
+      const job = updateJob({ id, title, description });
       if (!job) throw notFound('job not found for id:' + id, 'NOT_FOUND');
       return job;
     },
