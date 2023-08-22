@@ -25,3 +25,16 @@ type Job {
   description: String
   company: Company
 }
+
+type Mutation {
+  createJob(input: createJobInput!): Job
+}
+
+type Mutation {
+  deleteJob(id: ID!): Job
+}
+
+input createJobInput {
+  title: String!
+  description: String
+}

@@ -4,6 +4,21 @@ const graphql_endpoint = 'http://localhost:9000/graphql';
 
 const client = new GraphQLClient(graphql_endpoint);
 
+export async function createJob({ title, description }) {
+  const mutation = gql`
+    mutation CreateJob($input: createJobInput!) {
+      job: createJob(input: $input) {
+        id
+      }
+    }
+  `;
+
+  const { job } = await client.request(mutation, {
+    input: { title, description },
+  });
+  return job;
+}
+
 export async function getJobs() {
   const query = gql`
     query {
