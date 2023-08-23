@@ -30,17 +30,31 @@ export const resolvers = {
   },
 
   Mutation: {
-    createJob: (_root, { input: { title, description } }) => {
-      const companyId = 'FjcJCHJALA4i';
+    createJob: (_root, { input: { title, description } }, context) => {
+      console.log('context', context);
+      const { user } = context;
+      if (!user)
+        throw notFound('no authorization token for createJob', 'NO_AUTH');
+
+      const companyId = user.companyId;
       const jobCreated = createJob({ companyId, title, description });
       return jobCreated;
     },
-    deleteJob: (_root, { id }) => {
-      const job = deleteJob(id);
+    deleteJob: async (_root, { id }, context) => {
+      const { user } = context;
+      if (!user)
+        throw notFound('no authorization token for createJob', 'NO_AUTH');
+
+      const job = await deleteJob(id, user.companyId);
       if (!job) throw notFound('job not found for id:' + id, 'NOT_FOUND');
+
       return job;
     },
-    updateJob: (_root, { input: { id, title, description } }) => {
+    updateJob: (_root, { input: { id, title, description }, context }) => {
+      const { user } = context;
+      if (!user)
+        throw notFound('no authorization token for createJob', 'NO_AUTH');
+
       const job = updateJob({ id, title, description });
       if (!job) throw notFound('job not found for id:' + id, 'NOT_FOUND');
       return job;
