@@ -50,12 +50,16 @@ export const resolvers = {
 
       return job;
     },
-    updateJob: (_root, { input: { id, title, description }, context }) => {
+    updateJob: async (
+      _root,
+      { input: { id, title, description }, context }
+    ) => {
       const { user } = context;
       if (!user)
         throw notFound('no authorization token for createJob', 'NO_AUTH');
+      const companyId = user.companyId;
+      const job = await updateJob({ id, title, description, companyId });
 
-      const job = updateJob({ id, title, description });
       if (!job) throw notFound('job not found for id:' + id, 'NOT_FOUND');
       return job;
     },
