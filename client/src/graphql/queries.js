@@ -1,4 +1,5 @@
-import { GraphQLClient, gql } from 'graphql-request';
+import { ApolloClient, gql, InMemoryCache } from '@apollo/client';
+import { GraphQLClient } from 'graphql-request';
 import { getAccessToken } from '../lib/auth';
 
 const graphql_endpoint = 'http://localhost:9000/graphql';
@@ -12,6 +13,11 @@ const client = new GraphQLClient(graphql_endpoint, {
       };
     } else return {};
   },
+});
+
+const apolloClient = new ApolloClient({
+  uri: graphql_endpoint,
+  cache: new InMemoryCache(),
 });
 
 export async function createJob({ title, description }) {
@@ -43,14 +49,16 @@ export async function getJobs() {
       }
     }
   `;
-  const { jobs } = await client.request(query);
-  return jobs;
+  const { data } = await apolloClient.query({ query });
+  return data.jobs;
+  //const { jobs } = await client.request(query);
+  //return jobs;
 }
 
 export async function getJob(jobId) {
   const query = gql`
-    query getJob($id: ID!) {
-      job(id: $id) {
+    query getJob($jobId: ID!) {
+      job(id: $jobId) {
         id
         date
         title
@@ -63,8 +71,11 @@ export async function getJob(jobId) {
     }
   `;
 
-  const { job } = await client.request(query, { id: jobId });
-  return job;
+  const { data } = await apolloClient.query({
+    query,
+    variables: { jobId },
+  });
+  return data.job;
 }
 
 export async function getCompanyById(companyId) {
@@ -84,6 +95,10 @@ export async function getCompanyById(companyId) {
     }
   `;
 
-  const { company } = await client.request(query, { companyId });
-  return company;
+  const { data } = await apolloClient.query({
+    query,
+    variables: { companyId },
+  });
+
+  return data.company;
 }
