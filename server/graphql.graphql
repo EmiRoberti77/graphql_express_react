@@ -2,7 +2,7 @@ type Query {
   companies: [Company!]
   company(id: ID!): Company
   job(id: ID!): Job
-  jobs: [Job!]
+  jobs(limit: Int, offset: Int): [Job!]
 }
 
 """
