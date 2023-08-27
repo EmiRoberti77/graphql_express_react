@@ -6,6 +6,7 @@ import {
   createJob,
   deleteJob,
   updateJob,
+  getJobsCount,
 } from './db/jobs.js';
 import { getCompany, getCompanies } from './db/companies.js';
 
@@ -26,7 +27,14 @@ export const resolvers = {
       }
       return response;
     },
-    jobs: (_root, { limit, offset }) => getJobs(limit, offset),
+    jobs: async (_root, { limit, offset }) => {
+      const items = await getJobs(limit, offset);
+      const totalCount = await getJobsCount();
+      return {
+        items,
+        totalCount,
+      };
+    },
   },
 
   Mutation: {
