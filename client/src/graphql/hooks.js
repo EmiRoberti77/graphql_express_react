@@ -33,8 +33,13 @@ export function useJobs(limit, offset) {
     },
     fetchPolicy: 'network-only',
   });
-  console.log(data, loading, error);
-  return { jobs: data?.jobs, loading, error: Boolean(error) };
+
+  return {
+    items: data?.jobs?.items,
+    totalCount: data?.jobs?.totalCount,
+    loading,
+    error: Boolean(error),
+  };
 }
 
 export function useCreateJob() {

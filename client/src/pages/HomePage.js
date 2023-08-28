@@ -10,14 +10,16 @@ const direction = {
 
 function HomePage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const { jobs, loading, error } = useJobs(
+  const { items, totalCount, loading, error } = useJobs(
     JOBS_PER_PAGE,
     (currentPage - 1) * JOBS_PER_PAGE
   );
+  console.log('totalCount', totalCount);
+  const totalPages = Math.ceil(totalCount / JOBS_PER_PAGE);
 
   if (loading) return <div>loading</div>;
   if (error) return <div>error</div>;
-  if (!jobs) return <div>no data</div>;
+  if (!items) return <div>no data</div>;
 
   const onChangePage = (dir) => {
     switch (dir) {
@@ -32,13 +34,23 @@ function HomePage() {
   return (
     <div>
       <h1 className="title">Job Board</h1>
-      <JobList jobs={jobs} />
+      <JobList jobs={items} />
       <div>
-        <button onClick={() => onChangePage(direction.BACKWARDS)}>
+        <button
+          disabled={currentPage === 1}
+          onClick={() => onChangePage(direction.BACKWARDS)}
+        >
           Previous
         </button>
-        <span>{currentPage}</span>
-        <button onClick={() => onChangePage(direction.FORWARD)}>Next</button>
+        <span>
+          {currentPage} / {totalPages}
+        </span>
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => onChangePage(direction.FORWARD)}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
